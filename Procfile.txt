@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 web: gunicorn my_first_flask_project:app
+=======
+web: gunicorn my_first_flask_project:app
+>>>>>>> 3b8cd98b6d1c7833363affb53f4f8cf5aa416a53
