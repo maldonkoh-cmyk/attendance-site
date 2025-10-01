@@ -86,12 +86,12 @@
         document.cookie = "StudentName=" + name + "; path=/; max-age=31536000;";
 
         // Send data to Google Sheets via Apps Script
-        fetch("https://script.google.com/macros/s/AKfycbwsbstSHHHgI6NoIYtIiGjxMkXcdiizowiz6NFc88xyy60IMNPjruEDbgMcOjqHY6rO/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbxYhSl5TZogTjRbJBBaOb8PlQvxTD8QKuTCHJ69_9YrpNiz6dy-yWAsgXk7t6X28V1U/exec", {
           method: "POST",
           body: JSON.stringify({
             name: name,
             status: status,
-            class: "Class A"
+            class: "A Level 2"
           }),
           headers: {
             "Content-Type": "application/json"
