@@ -3,14 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    >
     <title>Teacher Dashboard</title>
   </head>
   <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #6f42c1;">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Teacher Dashboard</a>
@@ -22,9 +21,7 @@
 
     <div class="container mt-5">
       <h2 class="mb-4">Attendance Records</h2>
-
-      <!-- Attendance Table -->
-      <div class="card p-4">
+      <div class="card p-4 shadow-sm">
         <table class="table table-striped">
           <thead>
             <tr>
@@ -34,50 +31,54 @@
               <th>Class</th>
             </tr>
           </thead>
-          <tbody id="attendance-body">
-            <!-- Rows will be inserted dynamically -->
-          </tbody>
+          <tbody id="attendance-body"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-      // Your Google Apps Script Web App URL
-      const scriptURL = "https://script.google.com/macros/s/AKfycbw-DtIJUc4H8_c3gpIkp-xlsko_9TZ45qS81gYObQ6rM9Z0uPpfxw46womT--arPyw2/exec";
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-      // Load attendance data from Google Sheets
-      function loadAttendance() {
-        fetch(scriptURL)
-          .then(response => response.json())
-          .then(data => {
-            const tableBody = document.getElementById("attendance-body");
-            tableBody.innerHTML = "";
+      // 🔥 Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyD45PVraoB2qkF21snlFlsSvkCLUanROpg",
+        authDomain: "attendance-dashboard-c7f69.firebaseapp.com",
+        projectId: "attendance-dashboard-c7f69",
+        storageBucket: "attendance-dashboard-c7f69.firebasestorage.app",
+        messagingSenderId: "361189754171",
+        appId: "1:361189754171:web:aa2a25ccfd04b05e5a231e",
+        measurementId: "G-P3ELKXXYQP"
+      };
 
-            data.forEach(record => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${record.timestamp}</td>
-                <td>${record.name}</td>
-                <td>${record.status}</td>
-                <td>${record.class}</td>
-              `;
-              tableBody.appendChild(row);
-            });
-          })
-          .catch(error => {
-            console.error("Error fetching data:", error);
-          });
-      }
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
 
-      // Load data on page load
-      window.onload = loadAttendance;
+      const tableBody = document.getElementById("attendance-body");
 
-      // 🔄 Optional: Auto-refresh every 30 seconds
-      setInterval(loadAttendance, 30000);
+      // Real-time listener for updates
+      const q = query(collection(db, "attendance"), orderBy("timestamp", "desc"));
+      onSnapshot(q, (snapshot) => {
+        tableBody.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const time = data.timestamp?.toDate
+            ? data.timestamp.toDate().toLocaleString()
+            : "—";
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${time}</td>
+            <td>${data.name}</td>
+            <td>${data.status}</td>
+            <td>${data.class}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      });
     </script>
   </body>
 </html>
-
